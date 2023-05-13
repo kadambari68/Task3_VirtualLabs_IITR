@@ -1,0 +1,152 @@
+<!--Task 3 for Virtual Labs IIT Roorkee by Kadambari Purohit-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Graph Plotter</title>
+	<style>
+		table {
+			border-collapse: collapse;
+			margin: 20px;
+		}
+		table, th, td {
+			border: 1px solid black;
+			padding: 5px;
+		}
+		th {
+			text-align: left;
+			background-color: gray;
+			color: white;
+		}
+		h1 {
+			margin: 20px;
+		}
+		label {
+			display: inline-block;
+			width: 100px;
+			text-align: right;
+			margin-right: 10px;
+		}
+		input[type=range] {
+			width: 300px;
+			margin: 5px;
+		}
+		canvas {
+			border: 5px solid black;
+			height: 300px;
+			width: 500px;
+			padding: auto;
+		}
+		#add,#plot{
+			margin: 10px;
+			padding: 10px;
+		
+
+		}
+	</style>
+</head>
+<body>
+	<h1>Graph Plotter</h1>
+	<table>
+		<thead>
+			<tr>
+				<th>Dataset 1</th>
+				<th>Dataset 2</th>
+				<th>Dataset 3</th>
+				<th>Dataset 4</th>
+				<th>Dataset 5</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td id="data1"></td>
+				<td id="data2"></td>
+				<td id="data3"></td>
+				<td id="data4"></td>
+				<td id="data5"></td>
+			</tr>
+		</tbody>
+	</table>
+	<label for="slider">Select dataset:</label>
+	<input type="range" min="1" max="5" value="1" id="slider">
+	<br><br>
+	<label for="value">Value:</label>
+	<input type="number" id="value" >
+	<br>
+	<button id="add">Add to table</button>
+	<button id="plot">Plot graph</button>
+	<br>
+	<canvas id="graph"></canvas>
+	<script>
+		var data1 = [];
+		var data2 = [];
+		var data3 = [];
+		var data4 = [];
+		var data5 = [];
+		var currentData = data1;
+
+		var slider = document.getElementById("slider");
+		var value = document.getElementById("value");
+		var addBtn = document.getElementById("add");
+		var plotBtn = document.getElementById("plot");
+		var graph = document.getElementById("graph");
+		var ctx = graph.getContext("2d");
+
+		slider.addEventListener("input", function() {
+			switch (this.value) {
+				case "1":
+					currentData = data1;
+					break;
+				case "2":
+					currentData = data2;
+					break;
+				case "3":
+					currentData = data3;
+					break;
+				case "4":
+					currentData = data4;
+					break;
+				case "5":
+					currentData = data5;
+					break;
+			}
+			value.value = "";
+			graph.width = graph.width;
+			ctx.beginPath();
+		});
+
+		addBtn.addEventListener("click", function() {
+			if (value.value !== "") {
+				currentData.push(parseFloat(value.value));
+				document.getElementById("data" + slider.value).textContent = currentData.join(", ");
+			}
+			value.value = "";
+			graph.width = graph.width;
+			ctx.beginPath();
+		});
+
+		plotBtn.addEventListener("click", function() {
+			if (currentData.length > 0) {
+				var width = graph.width;
+				var height = graph.height;
+				var xScale = width / currentData.length;
+				var yScale = height / Math.max(...currentData);
+				ctx.beginPath();
+				ctx.moveTo(0, height - (currentData[0] * yScale));
+				for (var i = 1; i < currentData.length; i++) {
+					ctx.lineTo(i * xScale, height - (currentData[i] * yScale));
+				}
+				ctx.stroke();
+			}
+		});
+
+		value.addEventListener("input", function() {
+			if (this.value < 1) {
+				this.value = 1;
+			} else if (this.value > 5) {
+				this.value = 5;
+			}
+		});
+	</script>
+</body>
+</html>
